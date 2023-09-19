@@ -1,8 +1,8 @@
 ---
-title: Compile-time caching
+title: Google Ads Integration
 nextjs:
   metadata:
-    title: Compile-time caching
+    title: Google Ads Integration
     description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 

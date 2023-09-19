@@ -1,8 +1,8 @@
 ---
-title: Introdution to string theory
+title: Dynamic Headlines
 nextjs:
   metadata:
-    title: Introdution to string theory
+    title: Dynamic Headlines
     description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 

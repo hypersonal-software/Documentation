@@ -1,8 +1,8 @@
 ---
-title: CacheAdvance.predict()
+title: Referring Pages
 nextjs:
   metadata:
-    title: CacheAdvance.predict()
+    title: Referring Pages
     description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 

@@ -1,8 +1,8 @@
 ---
-title: Neuralink integration
+title: Meta Ads Integration
 nextjs:
   metadata:
-    title: Neuralink integration
+    title: Meta Ads Integration
     description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 
