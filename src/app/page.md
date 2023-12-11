@@ -2,7 +2,7 @@
 title: Getting started
 ---
 
-Learn how to use Hypersonal to personalize your ecommerce experience with AI. {% .lead %}
+Learn how to use Hypersonal to personalize your shopify store for every customer with AI. {% .lead %}
 
 <!-- {% quick-links %}
 
@@ -16,118 +16,94 @@ Learn how to use Hypersonal to personalize your ecommerce experience with AI. {%
 
 {% /quick-links %} -->
 
-Keep reading below for a quick introduction to getting started on Shopify with some of the core features of Hypersonal.
+Keep reading below for a quick introduction to getting started
+
+1) Understanding what it Hypersonal is and how it works
+1) Installing the app
+1) Setting up traffic sources
+1) Setting up theme blocks
 
 ---
 
 ## Important Concepts
 
-We'll start by going over Context Providers, where Hypersonal gets data from as well as give you an understanding of how Hypersonal generates personalized content.
-### Context Providers
+![Hero Image](/images/hero-vector-image.svg)
 
-Hypersonal refers to known data about a user as a context. This context is used to enable personalization features. Hypersonal uses large language models, and therefore relies heavily on natural language interpretations of these contexts.
+Hypersonal provides the following theme blocks that can be used on your store's product pages. The content of these theme blocks adapt to the user viewing them using generative AI. The AI makes choices about what content to show based on the context the user is viewing the content in.
 
-You can think of a *context as any data reducable to a search intent*. This could be what was in the image of the ad they clicked, the audio transcript of a video ad, the search query related to a google ad click, the referring blog page that led them to your product page, etc.
+* Dynamic text blocks (headlines, paragraphs of full product descriptions)
+* Option recommendations, such as color or size
+* Product recommendations, such as replacement or commplementary
+* Live Product Q&A and suggested questions
 
-<!-- ```shell
-npm install @tailwindlabs/cache-advance
-``` -->
+You can [view a demo of the theme blocks here](https://www.youtube.com/watch?v=nG0LqNYBEUA).
 
-As of the alpha version, Hypersonal supports the following context providers. In order to enable some of them you'll need to perform some additional setup.
+### How does Hypersonal work?
+In order to make a decision about what content to show, Hypersonal looks at *context* clues about how the user got to the page. Right now Hypersonal uses direct context clues, meaning it doesn't look at third party cookies or other data to make decisions. The following context clues will work with Hypersonal
 
-* Google Ads ([Additional Setup Required](/docs/context-providers/google-ads))
-* Meta Ads ([Additional Setup Required](/docs/context-providers/meta-ads))
-* Referring Pages
+* Referring from a relevant page. For example referring to a Kettlebell store from a blog post titled "Best Kettlebell Exercises for Summer 2024".
+* Direct hints you setup, passed through query parameters such as `?kw=` or `?q=`. You can add these to any links or campaigns you manage.
+* UTM tracking parameters such as keywords passed from Google Ads. Note that this doesn't work for Google ads Performance Max shopping ads.
 
-<!-- {% callout type="warning" title="Oh no! Something bad happened!" %}
-This is what a disclaimer message looks like. You might want to include inline `code` in it. Or maybe you’ll want to include a [link](/) in it. I don’t think we should get too carried away with other scenarios like lists or tables — that would be silly.
-{% /callout %} -->
-
-### Asynchronous Content Generation
-All of Hypersonal's features rely on content stored in Hypersonal's backend. Information about the user context is passed to Hypersonal's API, regardless of the integration, and a piece of dynamic content is retrieved. Dynamic content is only retrieved for display from existing pools of data. Whenever a new context is encountered globally, a backend process is triggered to generate personalized content for that context.
-
-Hypersonal doesn't block the page loading on new dynamic content generation. Dynamic content generation always happens asynchronously. This is because it is dependent on large language models which can take seconds to minutes to generate content. Far too long for a user to be shown a loading indicator.
-
-When a context is hit, a request is sent to the server to get the context dynamically. If it fails to find anything, a background request to generate the content is triggered. Within a few minutes the dynamic content matching this specific context should be available. Subsequent visits from the same context are then served this dynamic content. This means the first time anyone clicks on an ad, uses a specific keyword, etc. it won't be available to them. But afterward it will be available to all users.
-
-#### Example
-Let's look at a concrete example involving two users, Gerald and Paul. One of your partner sites, topfishercool.com published a piece of content that has just gotten indexed in google. Gerald visits your product page that has dynamic product descriptions enabled. He got there after searching for "Best fishing rod for bass fishing" on google and clicking through a blog post about the best fishing rods for bass fishing on topfishercool.com. Gerald is the *first person ever* to click through that link and will experience the page without the dynamic content. He will be shown the default product description.
-
-Suppose now Paul comes about 5 minutes later. By now Gerald's visit will have triggered a request in Hypersonal's backend to generate a product description for this context (topfishercool.com's best fishing rods for bass fishing blog post). Now Paul is shown a dynamic product description, tailored to how the product is well suited for bass fishing rather than the default product description.
+Hypersonal does not necessarily use all (or any) context clues. It depends on what it thinks is relevant to the product page. For example if referring from the CNN homepage to your Shoe Product page (congrats on that link, by the way), Hypersonal will like not use the referrer as a meaningful part of the context.
 
 {% callout title="You should know!" %}
-Prepopulating dynamic content is a feature coming in the future. However there will always be a chance that a user will see the non-personalized experience. For example for long tail keywords, newly created campaigns that are extremely recent, or if the content generation queue is backed up.
+Using context from Google Ads requires some additional setup to ensure the appropriate contextual data is passed.
 {% /callout %}
 
-## Quick Start
+Personalized content is loaded in the background and does not block the user experience. A default text option is available for certain theme blocks, and is displayed if no existing dynamic content exists fitting for that context. Dynamic content is cached based on context for quick loading times (< 40ms). Content for a new context that is not similar enough to an existing context is generated in the background. This means the individual request that triggered it won't see it, but subsequent ones will. This is done to ensure that the user experience is smooth as perceived loading time is critical to a store's customer experience.
 
-### App Installation
-Install the app through the Shopify store. If you encounter any issues, don't hesitate to reach out to our support team.
+This means the first time any user hits your product page from a specific referring page, the default text will be shown (or the block will remain hidden if you have configured the block to not display the default text). Meanwhile we've registered that this context exists and will generate and store dynamic content for users coming from this referring page. Any user that comes from that same referring page in the future will then be shown dynamic content from the cache.
 
-### Feature Setup
+#### Metering
+Because Hypersonal uses generative AI in the backend, generating dynamic text can be costly. In order to reflect the cost of the underlying computations, Hypersonal counts the number of generation events triggered for your store. The standard plan features 1,000 requests per month. If you go over this limit, subsequent calls to generate content will not be fulfilled.
 
-Hypersonal is a set of personalization features that you can enable visually on your store. For Shopify users these can be added through theme blocks. You can access these theme blocks in the theme editor. The Theme Editor can be accessed from the Shopify Admin dashboard through Sales Channels > Online Store > Themes, and then clicking the customize button as pictured below.
+You can view your current usage and plan's limit on the app's section of the admin dashboard.
 
-![The online store Themes page with the Customize button highlighted](/images/screenshot_edit_theme.jpg)
+![The status section of the admin dashboard shows generation request usage and limits](/images/screenshot_admin_status_limits.jpg)
+
+## App Installation
+Install the app through the Shopify app store (link to be updated). If you encounter any issues, don't hesitate to reach out to our support team at [support@hypersonal.com](mailto:support@hypersonal.com).
+
+## Context Setup
+### Referring Pages
+Referring pages work automatically, as the referrer is always passed to Hypersonal. Not every referring page is used as a context to inform the generated content.
+
+### UTM Parameters from Google Ads
+Setting up google ads to pass parameters requires modifying your Tracking template. This can be done at multiple levels, most commonly the following 3.
+
+1) The account level under Admin > Account Settings
+1) The campaign level via the campaign settings panel > Additional Settins > Campaign URL Options
+1) At the Ad level under Ad Url Options
+
+All of these can be configured similarly, using the following tracking template `{lpurl}?keyword={keyword}`. You can include other parameters in the template if you want to, but at the minimum keyword is required for Hypersonal. You can find a list of all parameters and ways to setup tracking at this [Google Ads Help Article](https://support.google.com/google-ads/answer/6305348).
+
+### Custom Query Parameters
+You can also pass hints to Hypersonal via query parameters. Hypersonal looks for the following parameters: `q`, `kw`, `keyword`, `k`, `search`, `query`.
+
+## Theme Block Setup
+
+Theme blocks are managed via the built in Shopify theme editor. Themes offer a range of configuration options such as
+
+* Default text behavior for when content is not available
+* Simple A/B testing options
+* Style and display options
+* Behavioral options such as recommendation type or custom instructions
+
+Installing theme blocks is as simple as dropping them into your template and configuring options.
+
+## Testing Your Installation
+If you want to test your theme block before anyone can access it, you can enable the require parameter option on the block.
+
+![The theme editor view of the admin dashboard where you can require parameters](/images/screenshot_theme_require_param.jpg)
+
+By checking this option you can ensure that normal users won't see any Hypersonal content. Only when you add the query parameter to the page will you see the block. You can do this yourself by modifying your product page url to add the appropriate query parameter. This depends on the block you want to see. For headlings for example this is `?dynamic-headline=true`. The informational text below the checkmark will tell you what the parameter is.
 
 {% callout title="You should know!" %}
-While you can setup most things through the theme blocks themselves, there are also configuration options available on the app page itself. Things like the keyword block list or global instructions for example. These are available in the Hypersonal app page under the Apps navigation.
+When using the require query parameter option, all A/B testing settings still apply. So you may not see the widget even if you have this checkbox enabled and the query parameter present.
 {% /callout %}
 
+To test your page you can hit your page with a request that looks like `{your product page}?dynamic-headline=true&kw={a relevant keyword}`. Replacing `{a relevant keyword}` with some keyword you want to test with. You may see the default text on the first request. After a few minutes try the request again and see if dynamic content is showing. If you require assistance confirming your setup is working, don't hesitate to reach out to our support team at [support@hypersonal.com](mailto:support@hypersonal.com)
 ---
-
-## Feature Introduction
-
-We'll cover the core features of Hypersonal and how to use them.
-
-### Dynamic Headlines
-
-Dynamic headlines are personalized generated content inserted into headlines on a product page. You can find out more about the practical applications of Dynamic Headlines on our [blog](https://www.hypersonal.com/blog/why-and-how-dynamic-headlines-increase-purchase-intent).
-
-The main idea behind dynamic headlines is that they increase purchase intent by tying the product page to the user's search intent.
-
-![Dynamic headline for Dachshunds appearing on a product page for a dog bed](/images/screenshot_dynamic_headline.jpg)
-
-The above example shows the product page for a dog bed with a dynamic headline. The context here is the user having searched for "Dog Bed for Dachshund" and clicking through a google ad. Dynamic headlines are easy to use. You simply add the dynamic headline to the Product Page Template.
-
-![The dynamic headline block on a product page template](/images/dynamic_headline_in_editor.jpg)
-
-You can learn more about [Dynamic Headlines here](/docs/features/dynamic-headlines).
-
-### Clearing the cache
-
-Vel aut velit sit dolor aut suscipit at veritatis voluptas. Laudantium tempore praesentium. Qui ut voluptatem.
-
-Ea est autem fugiat velit esse a alias earum. Dolore non amet soluta eos libero est. Consequatur qui aliquam qui odit eligendi ut impedit illo dignissimos.
-
-Ut dolore qui aut nam. Natus temporibus nisi voluptatum labore est ex error vel officia. Vero repellendus ut. Suscipit voluptate et placeat. Eius quo corporis ab et consequatur quisquam. Nihil officia facere dolorem occaecati alias deleniti deleniti in.
-
-### Adding middleware
-
-Officia nobis tempora maiores id iusto magni reprehenderit velit. Quae dolores inventore molestiae perspiciatis aut. Quis sequi officia quasi rem officiis officiis. Nesciunt ut cupiditate. Sunt aliquid explicabo enim ipsa eum recusandae. Vitae sunt eligendi et non beatae minima aut.
-
-Harum perferendis aut qui quibusdam tempore laboriosam voluptatum qui sed. Amet error amet totam exercitationem aut corporis accusantium dolorum. Perspiciatis aut animi et. Sed unde error ut aut rerum.
-
-Ut quo libero aperiam mollitia est repudiandae quaerat corrupti explicabo. Voluptas accusantium sed et doloribus voluptatem fugiat a mollitia. Numquam est magnam dolorem asperiores fugiat. Soluta et fuga amet alias temporibus quasi velit. Laudantium voluptatum perspiciatis doloribus quasi facere. Eveniet deleniti veniam et quia veritatis minus veniam perspiciatis.
-
----
-
 ## Getting help
-
-Consequuntur et aut quisquam et qui consequatur eligendi. Necessitatibus dolorem sit. Excepturi cumque quibusdam soluta ullam rerum voluptatibus. Porro illo sequi consequatur nisi numquam nisi autem. Ut necessitatibus aut. Veniam ipsa voluptatem sed.
-
-### Submit an issue
-
-Inventore et aut minus ut voluptatem nihil commodi doloribus consequatur. Facilis perferendis nihil sit aut aspernatur iure ut dolores et. Aspernatur odit dignissimos. Aut qui est sint sint.
-
-Facere aliquam qui. Dolorem officia ipsam adipisci qui molestiae. Error voluptatem reprehenderit ex.
-
-Consequatur enim quia maiores aperiam et ipsum dicta. Quam ut sit facere sit quae. Eligendi veritatis aut ut veritatis iste ut adipisci illo.
-
-### Join the community
-
-Praesentium facilis iste aliquid quo quia a excepturi. Fuga reprehenderit illo sequi voluptatem voluptatem omnis. Id quia consequatur rerum consectetur eligendi et omnis. Voluptates iusto labore possimus provident praesentium id vel harum quisquam. Voluptatem provident corrupti.
-
-Eum et ut. Qui facilis est ipsa. Non facere quia sequi commodi autem. Dicta autem sit sequi omnis impedit. Eligendi amet dolorum magnam repudiandae in a.
-
-Molestiae iusto ut exercitationem dolorem unde iusto tempora atque nihil. Voluptatem velit facere laboriosam nobis ea. Consequatur rerum velit ipsum ipsam. Et qui saepe consequatur minima laborum tempore voluptatum et. Quia eveniet eaque sequi consequatur nihil eos.
+If you run into any issues, have any questions, comments, or just want to chat feel free to drop a line to [support@hypersonal.com](mailto:support@hypersonal.com), we'd love to hear from you!
